@@ -1,7 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace BooksProject.Enities;
 
-namespace BooksProject.Enities
-{
+using System.Text.Json.Serialization;
+
     public class User
     {
         public int Id { get; set; }
@@ -12,5 +12,5 @@ namespace BooksProject.Enities
         [JsonIgnore]
         public string PasswordHash { get; set; }
     }
-}
+
 

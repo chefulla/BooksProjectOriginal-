@@ -1,13 +1,12 @@
 using BooksProject.Authorization;
 using BooksProject.Context;
 using BooksProject.Helpers;
-using LibraryOnline.Services;
+using BooksProject.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
- {
+{
     var services = builder.Services;
     var env = builder.Environment;
 
@@ -15,31 +14,31 @@ var builder = WebApplication.CreateBuilder(args);
         services.AddDbContext<DataContext>();
     else
         services.AddDbContext<DataContext, SqlDataContext>();
-    
+
     services.AddCors();
     services.AddControllers();
 
     services.AddAutoMapper(typeof(Program));
 
-
     // configure strongly typed settings object
     services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+
 
     services.AddScoped<IJwtUtils, JwtUtils>();
     services.AddScoped<IUserService, UserService>();
 
     // configure DI for application services
+
 }
 
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>();
-builder.Services.AddSqlServer<AppDbContext>(builder.Configuration.GetConnectionString("DefaultConnection"));
+builder.Services.AddTransient<UserService>();
+
+
 
 
 builder.Services.AddControllers();
-//builder.Services.AddDbContext<AppDbContext>(x => { x.UseSqlServer("DefaultConnection"); });
-
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -65,7 +64,7 @@ using (var scope = app.Services.CreateScope())
 
     app.MapControllers();
 
-    //app.Run("http://localhost:4000");
+   
 }
 
 // Configure the HTTP request pipeline.
@@ -75,34 +74,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-/*{
-    // global cors policy
-    app.UseCors(x => x
-        .AllowAnyOrigin()
-        .AllowAnyMethod()
-        .AllowAnyHeader());
-
-    // custom jwt auth middleware
-    app.UseMiddleware<JwtMiddleware>();
-
-    app.MapControllers();
-}*/
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
+
 app.Run();
-
-
-
-

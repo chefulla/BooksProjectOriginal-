@@ -1,7 +1,7 @@
-﻿
+﻿namespace BooksProject.Controllers;
+
 using BooksProject.Models;
 using Microsoft.AspNetCore.Mvc;
-
 using BooksProject.Models;
 using AutoMapper;
 using Microsoft.Extensions.Options;
@@ -11,19 +11,19 @@ using BooksProject.Models.Users;
 using BooksProject.Helpers;
 using BooksProject.Models.Users;
 using Microsoft.AspNetCore.Authorization;
-using LibraryOnline.Services;
-using AuthorizeAttribute = BooksProject.Authorization.AuthorizeAttribute;
+using BooksProject.Services;
+using AuthorizeAttribute = Microsoft.AspNetCore.Authorization.AuthorizeAttribute;
 
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class UsersController : ControllerBase
+public class UserController : ControllerBase
 {
     private IUserService _userService;
     private IMapper _mapper;
     private readonly AppSettings _appSettings;
 
-    public UsersController(
+    public UserController(
         UserService userService,
         IMapper mapper,
         IOptions<AppSettings> appSettings)
