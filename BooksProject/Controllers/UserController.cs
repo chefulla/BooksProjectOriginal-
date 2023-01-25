@@ -34,7 +34,7 @@ public class UserController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost("authenticate")]
+    [HttpPost("Login")]
     public IActionResult Authenticate(AuthenticateRequest model)
     {
         var response = _userService.Authenticate(model);
@@ -42,7 +42,7 @@ public class UserController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost("register")]
+    [HttpPost("Register")]
     public IActionResult Register(RegisterRequest model)
     {
         _userService.Register(model);

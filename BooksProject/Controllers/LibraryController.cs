@@ -55,21 +55,21 @@ namespace BooksProject.Controllers
         }
 
         [HttpGet("CertainBook")]
-        public IActionResult CertainBook(int id)
+        public IActionResult CertainBook([FromRoute] int id)
         {
             var res = _appDbContext.Books.Where(x => x.Id == id).First();
             return Ok(res);
         }
 
         [HttpGet("CertainAuthor")]
-        public IActionResult CertainAuthor(int id)
+        public IActionResult CertainAuthor([FromRoute] int id)
         {
             var res = _appDbContext.Authors.Where(x => x.Id == id).First();
             return Ok(res);
         }
 
         [HttpGet("CertainAuthorBook")]
-        public IActionResult CertainAuthorBook(int id)
+        public IActionResult CertainAuthorBook([FromRoute]int id)
         {
             var res = _appDbContext.AuthorBooks.Where(x => x.AuthorId == id).First();
             return Ok(res);
@@ -84,7 +84,7 @@ namespace BooksProject.Controllers
 
         [HttpDelete("DeleteBook")]
 
-        public IActionResult DeleteBook(int id)
+        public IActionResult DeleteBook([FromRoute]int id)
         {
             var res = _appDbContext.Books.First(x => x.Id == id);
             _appDbContext.Books.Remove(res);
