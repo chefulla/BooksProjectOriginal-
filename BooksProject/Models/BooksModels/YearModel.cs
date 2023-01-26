@@ -1,4 +1,4 @@
-﻿namespace BooksProject.Models
+﻿namespace BooksProject.Models.BooksModels
 {
     public class YearModel
     {

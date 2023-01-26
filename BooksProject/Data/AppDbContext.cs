@@ -1,4 +1,4 @@
-﻿using BooksProject.Models;
+﻿using BooksProject.Models.BooksModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace BooksProject.Context
@@ -18,5 +18,6 @@ namespace BooksProject.Context
         public DbSet<RatingModel> RatingModels { get; set; }
         public DbSet<ReviewModel> ReviewsModels { get; set; }
         public DbSet<YearModel> YearModels { get; set; }
+        public object BooksModels { get; internal set; }
     }
 }
