@@ -1,8 +1,12 @@
 using BooksProject.Authorization;
 using BooksProject.Context;
+using BooksProject.Data;
 using BooksProject.Helpers;
 using BooksProject.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +38,22 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddTransient<UserService>();
+builder.Services.AddSwaggerGen(options =>
+{
+    const string name = "Bearer token";
+
+    options.AddSecurityDefinition(name, new OpenApiSecurityScheme
+    {
+        Description = "Standard Authorization header using the Bearer scheme. Example: \"Bearer { token }\"",
+        In = ParameterLocation.Header,
+        Name = HeaderNames.Authorization,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+    });
+
+    options.OperationFilter<SecurityRequirementsOperationFilter>(true, name);
+});
 
 
 
