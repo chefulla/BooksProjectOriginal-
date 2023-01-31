@@ -1,5 +1,5 @@
 ﻿using BooksProject.Context;
-using BooksProject.Data;
+using BooksProject.Models;
 using BooksProject.Models.BooksModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,64 +17,39 @@ namespace BooksProject.Controllers
         {
             _appDbContext = appDbContext;
         }
-        
+
         [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
-            var res = _appDbContext.AuthorBooks.Include(a => a.Author).Include(b => b.Book).ToList();
-
-            return Ok(res);
-        }
-
-        [Authorize]
-        [HttpGet("GetAuthors")]
-
-        public IActionResult GetAuthors()
-        {
-
-            var res = _appDbContext.Authors.Select(x => new
-            {
-                Id = x.Id,
-                Name = x.Name,
-            });
-
-            return Ok(res);
-        }
-
-        [HttpGet("GetBooks")]
-
-        public IActionResult GetBooks()
-        {
-
             var res = _appDbContext.Books.Select(x => new
             {
                 Id = x.Id,
-                Title = x.Title,
+                Name = x.Name,
+                Author = x.Author,
+                Year = x.Year,
+                Genre = x.Genre,
+                Price = x.Price,
+                Rating = x.Rating,
+                Reviews = x.Reviews,
             });
 
             return Ok(res);
         }
 
-        [HttpGet("CertainBook")]
-        public IActionResult CertainBook([FromRoute] int id)
-        {
-            var res = _appDbContext.Books.Where(x => x.Id == id).First();
-            return Ok(res);
-        }
+        //[HttpPost("Post")]
+        //public async Task<ActionResult> Create([FromBody] Book model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-        [HttpGet("CertainAuthor")]
-        public IActionResult CertainAuthor([FromRoute] int id)
-        {
-            var res = _appDbContext.Authors.Where(x => x.Id == id).First();
-            return Ok(res);
-        }
+        //    _appDbContext.Books.Add(model);
+        //    await _appDbContext.SaveChangesAsync();
 
-        [HttpGet("CertainAuthorBook")]
-        public IActionResult CertainAuthorBook([FromRoute]int id)
-        {
-            var res = _appDbContext.AuthorBooks.Where(x => x.AuthorId == id).First();
-            return Ok(res);
-        }
+        //    return CreatedAtAction("Get", new { id = model.Id }, model);
+        //}
+
 
         [HttpPost("PostBook")]
         public IActionResult PostBook(Book item)
@@ -83,46 +58,57 @@ namespace BooksProject.Controllers
             return Ok(res);
         }
 
+
         [HttpDelete("DeleteBook")]
 
-        public IActionResult DeleteBook([FromRoute]int id)
+        public IActionResult DeleteBook(int id)
         {
             var res = _appDbContext.Books.First(x => x.Id == id);
             _appDbContext.Books.Remove(res);
             return Ok();
         }
 
-        //[HttpGet("Books2")]
-        //public ActionResult GetAll()
-        //{
-        //    var index = _libraryContext.Authors.Include(c => c.Book);
-        //    return 
-        //}
-
-
-        //[HttpGet("AuthorsId")]
-        //public string GetAuthorId(int id)
-        //{
-        //    return _libraryContext.Authors.FirstOrDefault(z => z.Id == id)
-        //}
-
-
-        [HttpPost("AuthorPost")]
-        public void Post([FromBody] Author author)
-        {
-            _appDbContext.Authors.Add(author);
-            _appDbContext.SaveChanges();
-        }
-
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] Book model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != model.Id)
+            {
+                return BadRequest();
+            }
+
+            _appDbContext.Entry(model).State = EntityState.Modified;
+
+            try
+            {
+                await _appDbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ModelExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        private bool ModelExists(int id)
+        {
+            return _appDbContext.Books.Any(e => e.Id == id);
         }
 
 
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+
+
     }
 }

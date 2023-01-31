@@ -4,12 +4,12 @@ namespace BooksProject.Models.ViewModels
 {
     public class BooksViewModel
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
+        public string Name { get; set; }
+        public string Author { get; set; }
         public int Year { get; set; }
-        public virtual GenreModel GenreModel { get; set; }
-        public virtual PriceModel PriceModel{ get; set; }
-        public virtual RatingModel RatingModel { get; set; }
-        public virtual ReviewModel ReviewModel { get; set; }
+        public string Genre { get; set; }
+        public int Price { get; set; }
+        public double Rating { get; set; }
+        public int Reviews { get; set; }
     }
 }
